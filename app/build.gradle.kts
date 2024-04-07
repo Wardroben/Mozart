@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -50,6 +53,19 @@ android {
 }
 
 dependencies {
+    //room
+    implementation(libs.androidx.room)
+    implementation(libs.androidx.room.ktx)
+    annotationProcessor(libs.androidx.room.annotation.processor)
+    ksp(libs.androidx.room.annotation.processor)
+
+    //hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.annotation.processor)
+
+    //media3
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.media.session)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -66,4 +82,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+kapt {
+    correctErrorTypes = true
 }
