@@ -1,4 +1,4 @@
-package com.example.mozart.ui.theme
+package com.example.mozart.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
