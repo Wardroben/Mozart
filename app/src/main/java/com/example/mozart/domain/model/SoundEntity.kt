@@ -10,8 +10,10 @@ data class SoundEntity(
     @ColumnInfo(name = "file_name") val fileName: String,
     val uri: String,
     @ColumnInfo(name = "start_position") val startPosition: Long,
-    @ColumnInfo(name = "end_position") val endPosition: Long,
+    @ColumnInfo(name = "end_position") val endPosition: Long?,
+    @ColumnInfo(name = "at_widget") val atWidget: Boolean = false
     //@Ignore val duration: Long
 )
 
-fun SoundEntity.toSound() = Sound(id, fileName, uri, startPosition, endPosition)
+fun SoundEntity.toSound() =
+    Sound(id, fileName, uri, startPosition, endPosition, atWidget = atWidget)

@@ -1,0 +1,236 @@
+package com.example.mozart.presentation.sounds_grid
+
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.mozart.R
+import com.example.mozart.domain.model.Sound
+import com.example.mozart.presentation.sounds_grid.components.AddSoundsFAB
+import com.example.mozart.presentation.sounds_grid.components.LoadingContent
+import com.example.mozart.presentation.sounds_grid.components.ModalSheetContent
+import com.example.mozart.presentation.sounds_grid.components.SoundsBottomAppBarActions
+import com.example.mozart.presentation.sounds_grid.components.SoundsEmptyContent
+import com.example.mozart.presentation.sounds_grid.components.SoundsGrid
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SoundGridScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SoundsViewModel = hiltViewModel(),
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val soundsLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenMultipleDocuments()
+        ) { uris: List<Uri> ->
+            takePersistablePermissionForUri(uris, context)
+            val filenames = uris.map { uri -> dumpFileDisplayName(uri, context.contentResolver) }
+            val sounds = mapUrisToSounds(uris, filenames)
+            viewModel.addSounds(sounds)
+        }
+
+    Scaffold(
+        modifier = modifier,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        bottomBar = {
+            BottomAppBar(
+                actions = {
+                    //TODO action: sorting, finding...
+                    SoundsBottomAppBarActions(
+                        onSearch = { /*TODO*/ },
+                        onSort = { viewModel.showFilterOptions() }
+                    )
+                },
+                floatingActionButton = {
+                    AddSoundsFAB(onClick = { soundsLauncher.launch(arrayOf("audio/*")) })
+                }
+            )
+        }
+    ) { paddings ->
+        val uiState by viewModel.uiState.collectAsState()
+        val modalSheetState by viewModel.modalSheetState.collectAsState()
+        SoundsContent(
+            modifier = modifier.padding(paddings),
+            loading = uiState.isLoading,
+            currentFilteringLabel = uiState.filterUiInfo.currentFilteringLabel,
+            noSoundsLabel = uiState.filterUiInfo.noSoundsLabel,
+            noSoundsIconRes = uiState.filterUiInfo.noSoundIconRes,
+            sounds = uiState.sounds,
+            playingSound = uiState.playingSound,
+            onSoundClicked = { sound -> },
+            onLongSoundClicked = { sound -> viewModel.showSoundControls(sound = sound) }
+        )
+
+        // Check for user messages to display on the screen
+        uiState.userMessage?.let { message ->
+            val snackbarText = stringResource(id = message)
+            LaunchedEffect(message) {
+                snackbarHostState.showSnackbar(snackbarText, duration = SnackbarDuration.Short)
+                viewModel.snackbarMessageShown()
+            }
+        }
+
+        if (modalSheetState.isVisible) {
+            ModalBottomSheet(
+                onDismissRequest = { viewModel.changeModalSheetVisibility(false) },
+                sheetState = sheetState
+            ) {
+                ModalSheetContent(
+                    sheetActionsGroup = modalSheetState.action,
+                    filterOnWidget = { viewModel.setFiltering(SoundFilterType.ON_WIDGET_SOUNDS) },
+                    showAllSounds = { viewModel.setFiltering(SoundFilterType.ALL_SOUNDS) },
+                    addSoundToWidget = { viewModel.moveSoundWidget(it, true) },
+                    removeSoundFromWidget = { viewModel.moveSoundWidget(it, false) },
+                    onDeleteSound = { viewModel.deleteSounds(listOf(it)) },
+                    onEditSound = { TODO() },
+                    hideSheet = {
+                        scope.launch { sheetState.hide() }
+                            .invokeOnCompletion { viewModel.hideBottomModalSheet() }
+                    }
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
+
+    }
+}
+
+@Composable
+fun SoundsContent(
+    modifier: Modifier = Modifier,
+    loading: Boolean,
+    @StringRes currentFilteringLabel: Int,
+    @StringRes noSoundsLabel: Int,
+    @DrawableRes noSoundsIconRes: Int,
+    sounds: List<Sound>,
+    playingSound: Sound?,
+    onLongSoundClicked: (Sound) -> Unit,
+    onSoundClicked: (Sound) -> Unit,
+) {
+    LoadingContent(
+        loading = loading,
+        empty = sounds.isEmpty() && !loading,
+        emptyContent = {
+            SoundsEmptyContent(
+                noSoundsLabel = noSoundsLabel,
+                noSoundsIcon = noSoundsIconRes
+            )
+        }) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(id = currentFilteringLabel),
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.horizontal_margin),
+                    vertical = dimensionResource(id = R.dimen.vertical_margin)
+                ),
+                style = MaterialTheme.typography.labelSmall
+            )
+            SoundsGrid(
+                sounds = sounds,
+                playingSound = playingSound,
+                onLongSoundClicked = onLongSoundClicked,
+                onSoundClicked = onSoundClicked
+            )
+        }
+    }
+}
+
+/*
+* map uri list and file names list to sound
+ */
+private fun mapUrisToSounds(
+    uris: List<Uri>,
+    fileNames: List<String>
+) = uris.mapIndexed { index, uri ->
+    Sound(
+        uri = uri.toString(),
+        fileName = fileNames[index]
+    )
+}
+
+/*
+* map uri to sound using another fun to get filename from file metadata
+* BAD IDEA
+ */
+private fun mapUrisToSounds(
+    uris: List<Uri>,
+    context: Context
+) = uris.map { uri ->
+    Sound(
+        fileName = dumpFileDisplayName(uri, context.contentResolver),
+        uri = uri.toString()
+    )
+}
+
+private fun takePersistablePermissionForUri(
+    uris: List<Uri>,
+    context: Context
+) {
+    uris.forEach { uri ->
+        context.contentResolver.takePersistableUriPermission(
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
+    }
+}
+
+private fun dumpFileDisplayName(uri: Uri, contentResolver: ContentResolver): String {
+    val cursor: Cursor? = contentResolver.query(
+        uri,
+        null,
+        null,
+        null,
+        null,
+        null
+    )
+    var displayName = String()
+    cursor?.use {
+        displayName = if (it.moveToFirst()) {
+            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            it.getString(nameIndex)
+        } else "Unknown"
+    }
+    return displayName
+}

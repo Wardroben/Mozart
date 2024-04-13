@@ -58,14 +58,17 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     annotationProcessor(libs.androidx.room.annotation.processor)
     ksp(libs.androidx.room.annotation.processor)
-
     //hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation)
     kapt(libs.hilt.annotation.processor)
-
     //media3
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.media.session)
+    //glance
+    implementation(libs.androidx.glance.appwidget)
+    //navigation
+    implementation(libs.androidx.navigation)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

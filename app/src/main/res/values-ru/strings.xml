@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mozart</string>
+    <string name="add_sound_floating_button">Добавить звук</string>
+    <string name="sounds_loading_error">Ошибка загрузки</string>
+</resources>
