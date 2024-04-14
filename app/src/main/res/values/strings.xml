@@ -8,7 +8,7 @@
     <string name="label_at_widget">Sounds at widget</string>
     <string name="no_sounds_at_widget">You have not sounds at widget</string>
     <string name="error_while_loading_sounds">Error while loading sounds</string>
-    <string name="no_sounds_image_content_description">You have no sounds</string>
+    <string name="no_sounds_image_content_description">No sounds image</string>
     <string name="search_sounds_content_description">Search sounds</string>
     <string name="sort_sounds_content_description">Sort sounds</string>
     <string name="delete_sound_label">Delete sound</string>

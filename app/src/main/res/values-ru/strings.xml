@@ -8,7 +8,7 @@
     <string name="label_at_widget">Звуки на виджете</string>
     <string name="no_sounds_at_widget">У вас нет звуков на виджете</string>
     <string name="error_while_loading_sounds">Ошибка при загрузке звуков</string>
-    <string name="no_sounds_image_content_description">Звуки отсутствуют</string>
+    <string name="no_sounds_image_content_description">Изображение \"нет звуков\"</string>
     <string name="search_sounds_content_description">Искать звуки</string>
     <string name="sort_sounds_content_description">Сортировать звуки</string>
     <string name="delete_sound_label">Удалить звук</string>
