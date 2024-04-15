@@ -1,6 +1,8 @@
 package com.example.mozart.presentation.sounds_grid
 
+import android.content.Context
 import androidx.compose.runtime.Immutable
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mozart.R
@@ -9,6 +11,7 @@ import com.example.mozart.domain.repository.SoundRepository
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ALL_SOUNDS
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ON_WIDGET_SOUNDS
 import com.example.mozart.presentation.sounds_grid.components.SheetActionGroup
+import com.example.mozart.presentation.widget.MozartWidget
 import com.example.mozart.util.Async
 import com.example.mozart.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,9 +41,7 @@ class SoundsViewModel @Inject constructor(
 
     private val _sheetActionGroup = MutableStateFlow<SheetActionGroup>(SheetActionGroup.None)
     val modalSheetState = _sheetActionGroup.map { actionGroup ->
-        ModalSheetState(
-            actionGroup = actionGroup
-        )
+        ModalSheetState(actionGroup = actionGroup)
     }
 
     private val _selectedSounds = MutableStateFlow<List<Sound>>(emptyList())
@@ -77,11 +78,12 @@ class SoundsViewModel @Inject constructor(
         }
     }
 
-    fun moveSoundWidget(sound: Sound, atWidget: Boolean) {
+    fun moveSoundWidget(sound: Sound, atWidget: Boolean, context: Context) {
         viewModelScope.launch {
             repository.updateSound(
                 sound.copy(atWidget = atWidget)
             )
+            MozartWidget().updateAll(context)
         }
     }
 

@@ -27,4 +27,11 @@ class SoundRepositoryImpl @Inject constructor(
                 soundEntity.toSound()
             }
         }
+
+    override fun getSoundsAtWidget(): Flow<List<Sound>> =
+        dao.getSoundsAtWidgetStream().map { soundsAtWidget ->
+        soundsAtWidget.map { soundEntity ->
+            soundEntity.toSound()
+        }
+    }
 }

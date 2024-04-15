@@ -15,4 +15,7 @@
     <string name="edit_sound_label">Edit sound</string>
     <string name="add_to_widget_label">Add sound to the widget</string>
     <string name="remove_from_widget_label">Remove sound from the widget</string>
+
+    <string name="mozart_widget_description">Play sounds from app</string>
+    <string name="open_app_label">Open app</string>
 </resources>

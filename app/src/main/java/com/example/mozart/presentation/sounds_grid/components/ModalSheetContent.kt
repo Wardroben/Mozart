@@ -25,7 +25,7 @@ import com.example.mozart.domain.model.sound.Sound
 import com.example.mozart.presentation.sounds_grid.ControlSound
 import com.example.mozart.presentation.sounds_grid.FilterSound
 import com.example.mozart.presentation.sounds_grid.SoundFilterType
-import com.example.mozart.presentation.sounds_grid.components.SheetActionGroup.*
+import com.example.mozart.presentation.sounds_grid.components.SheetActionGroup.SoundControl
 
 val horizontalMargin = 20.dp
 val verticalMargin = 15.dp
@@ -36,8 +36,9 @@ fun ModalSheetContent(
     actionGroup: SheetActionGroup,
     onEditSound: (Sound) -> Unit,
     onDeleteSound: (Sound) -> Unit,
-    addSoundToWidget: (Sound) -> Unit,
-    removeSoundFromWidget: (Sound) -> Unit,
+    //addSoundToWidget: (Sound) -> Unit,
+    //removeSoundFromWidget: (Sound) -> Unit,
+    changeSoundWidgetState: (Sound, Boolean) -> Unit,
     filterSounds: (SoundFilterType) -> Unit,
     hideSheet: () -> Unit
 ) {
@@ -71,12 +72,14 @@ fun ModalSheetContent(
                 }
 
                 is ControlSound.AddOnWidget -> {
-                    addSoundToWidget(sheetAction.type.sound)
+                    changeSoundWidgetState(sheetAction.type.sound, true)
+                    //addSoundToWidget(sheetAction.type.sound)
                     hideSheet()
                 }
 
                 is ControlSound.RemoveFromWidget -> {
-                    removeSoundFromWidget(sheetAction.type.sound)
+                    changeSoundWidgetState(sheetAction.type.sound, false)
+                    //removeSoundFromWidget(sheetAction.type.sound)
                     hideSheet()
                 }
 

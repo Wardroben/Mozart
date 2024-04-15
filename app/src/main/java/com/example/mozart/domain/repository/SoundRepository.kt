@@ -10,4 +10,6 @@ interface SoundRepository {
 
     fun getAllSounds(): Flow<List<Sound>>
 
+    fun getSoundsAtWidget(): Flow<List<Sound>>
+
 }

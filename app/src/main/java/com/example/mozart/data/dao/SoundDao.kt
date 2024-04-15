@@ -22,4 +22,6 @@ interface SoundDao {
     @Query("SELECT * FROM sounds")
     fun getAllSounds(): Flow<List<SoundEntity>>
 
+    @Query("SELECT * FROM sounds WHERE at_widget = 1")
+    fun getSoundsAtWidgetStream(): Flow<List<SoundEntity>>
 }

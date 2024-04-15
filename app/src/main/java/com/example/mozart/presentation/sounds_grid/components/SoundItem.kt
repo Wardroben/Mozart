@@ -2,7 +2,9 @@ package com.example.mozart.presentation.sounds_grid.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,8 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.example.mozart.common.SoundExamples
 import com.example.mozart.domain.model.sound.Sound
+import com.example.mozart.util.SoundExamples
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -41,7 +43,11 @@ fun SoundItem(
             ),
         shape = CardDefaults.elevatedShape
     ) {
-        Column(Modifier.padding(10.dp)) {
+        Column(
+            modifier = Modifier.padding(10.dp).fillMaxSize(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             SoundIcon(
                 isPlaying = isPlaying,
                 modifier = Modifier.align(Alignment.CenterHorizontally)

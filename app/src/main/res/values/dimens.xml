@@ -7,4 +7,7 @@
 
     <dimen name="sheet_item_horizontal_margin">20dp</dimen>
     <dimen name="sheet_item_vertical_margin">15dp</dimen>
+
+    <dimen name="min_widget_width">100dp</dimen>
+    <dimen name="min_widget_height">100dp</dimen>
 </resources>

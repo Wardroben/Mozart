@@ -32,5 +32,4 @@ object RoomModule {
     @Provides
     @Singleton
     fun provideSoundRepository(dao: SoundDao): SoundRepository = SoundRepositoryImpl(dao)
-
 }

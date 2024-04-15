@@ -1,4 +1,4 @@
-package com.example.mozart.common
+package com.example.mozart.util
 
 import com.example.mozart.domain.model.sound.Sound
 

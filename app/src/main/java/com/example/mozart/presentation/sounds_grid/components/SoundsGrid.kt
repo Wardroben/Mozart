@@ -16,8 +16,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mozart.R
-import com.example.mozart.common.SoundExamples
 import com.example.mozart.domain.model.sound.Sound
+import com.example.mozart.util.SoundExamples
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

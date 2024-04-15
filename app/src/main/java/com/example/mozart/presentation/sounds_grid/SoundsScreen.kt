@@ -115,8 +115,11 @@ fun SoundGridScreen(
                 ModalSheetContent(
                     actionGroup = modalSheetState.actionGroup,
                     filterSounds = { filterType -> viewModel.setFiltering(filterType) },
-                    addSoundToWidget = { viewModel.moveSoundWidget(it, true) },
-                    removeSoundFromWidget = { viewModel.moveSoundWidget(it, false) },
+                    //addSoundToWidget = { viewModel.moveSoundWidget(it, true) },
+                    //removeSoundFromWidget = { viewModel.moveSoundWidget(it, false) },
+                    changeSoundWidgetState = { sound, atWidget ->
+                        viewModel.moveSoundWidget(sound, atWidget, context)
+                    },
                     onDeleteSound = { viewModel.deleteSounds(listOf(it)) },
                     onEditSound = { TODO() },
                     hideSheet = {
