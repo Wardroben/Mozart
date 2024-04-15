@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mozart.R
-import com.example.mozart.domain.model.Sound
+import com.example.mozart.domain.model.sound.Sound
 import com.example.mozart.domain.repository.SoundRepository
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ALL_SOUNDS
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ON_WIDGET_SOUNDS
@@ -14,7 +14,6 @@ import com.example.mozart.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -30,15 +29,21 @@ class SoundsViewModel @Inject constructor(
     private val _userMessage = MutableStateFlow<Int?>(null)
     private val _filterType = MutableStateFlow<SoundFilterType>(ALL_SOUNDS)
     private val _filterUiInfo = _filterType.map { getFilterUiInfo(it) }
-    private val _modalSheetState = MutableStateFlow(ModalSheetState())
-    val modalSheetState = _modalSheetState.asStateFlow()
-    private val _selectedSounds = MutableStateFlow<List<Sound>>(emptyList())
     private val _filteredSoundsAsync =
         combine(repository.getAllSounds(), _filterType) { sounds, type ->
             filterSounds(sounds, type)
         }
             .map { Async.Success(it) }
             .catch<Async<List<Sound>>> { emit(Async.Error(R.string.error_while_loading_sounds)) }
+
+    private val _sheetActionGroup = MutableStateFlow<SheetActionGroup>(SheetActionGroup.None)
+    val modalSheetState = _sheetActionGroup.map { actionGroup ->
+        ModalSheetState(
+            actionGroup = actionGroup
+        )
+    }
+
+    private val _selectedSounds = MutableStateFlow<List<Sound>>(emptyList())
 
     val uiState: StateFlow<SoundsUiState> = combine(
         _filterUiInfo, _filteredSoundsAsync, _selectedSounds, _userMessage
@@ -92,35 +97,22 @@ class SoundsViewModel @Inject constructor(
     }
 
     fun showFilterOptions() {
-        viewModelScope.launch {
-            _modalSheetState.update {
-                it.copy(isVisible = true, action = SheetActionGroup.Filter)
-            }
+        _sheetActionGroup.update {
+            SheetActionGroup.Filter
         }
     }
 
-
     fun showSoundControls(sound: Sound) {
-        viewModelScope.launch {
-            _modalSheetState.update {
-                it.copy(isVisible = true, action = SheetActionGroup.SoundControl(sound))
-            }
+        val soundIndex = uiState.value.sounds.indexOf(sound)
+        val soundToControl = uiState.value.sounds[soundIndex]
+        _sheetActionGroup.update {
+            SheetActionGroup.SoundControl(soundToControl)
         }
     }
 
     fun hideBottomModalSheet() {
-        viewModelScope.launch {
-            _modalSheetState.update {
-                it.copy(isVisible = false, action = null)
-            }
-        }
-    }
-
-    fun changeModalSheetVisibility(visible: Boolean) {
-        viewModelScope.launch {
-            _modalSheetState.update {
-                it.copy(isVisible = visible)
-            }
+        _sheetActionGroup.update {
+            SheetActionGroup.None
         }
     }
 
@@ -167,14 +159,23 @@ data class SoundsUiState(
 )
 
 @Immutable
-data class ModalSheetState(
-    val isVisible: Boolean = false,
-    val action: SheetActionGroup? = null
-)
-
-@Immutable
 data class FilteringUiInfo(
     val currentFilteringLabel: Int = R.string.label_all_sounds,
     val noSoundsLabel: Int = R.string.no_sounds_all,
     val noSoundIconRes: Int = R.drawable.baseline_error_outline_24
 )
+
+@Immutable
+data class ModalSheetState(
+    val actionGroup: SheetActionGroup = SheetActionGroup.None,
+    val isVisible: Boolean = actionGroup !is SheetActionGroup.None
+)
+
+@Immutable
+data class ModalSheetAction(
+    val iconRes: Int,
+    val label: Int,
+    val contentDescription: Int,
+    val type: ActionType
+)
+

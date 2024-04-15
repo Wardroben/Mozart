@@ -1,5 +1,7 @@
 package com.example.mozart.presentation.sounds_grid.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,14 +20,25 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.example.mozart.common.SoundExamples
-import com.example.mozart.domain.model.Sound
+import com.example.mozart.domain.model.sound.Sound
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SoundItem(modifier: Modifier = Modifier, sound: Sound, isPlaying: Boolean) {
+fun SoundItem(
+    modifier: Modifier = Modifier,
+    sound: Sound,
+    isPlaying: Boolean,
+    onLongClicked: () -> Unit,
+    onClick: () -> Unit
+) {
     Card(
         modifier = modifier
+            .size(100.dp)
             .clip(RoundedCornerShape(10.dp))
-            .size(100.dp),
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClicked
+            ),
         shape = CardDefaults.elevatedShape
     ) {
         Column(Modifier.padding(10.dp)) {
@@ -47,5 +60,5 @@ fun SoundItem(modifier: Modifier = Modifier, sound: Sound, isPlaying: Boolean) {
 @Preview(widthDp = 80, heightDp = 80)
 @Composable
 private fun SoundItemPreview() {
-    SoundItem(sound = SoundExamples.sounds[3], isPlaying = false)
+    SoundItem(sound = SoundExamples.sounds[3], isPlaying = false, onLongClicked = {}, onClick = {})
 }

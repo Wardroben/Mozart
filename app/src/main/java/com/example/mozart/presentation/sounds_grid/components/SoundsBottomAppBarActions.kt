@@ -26,7 +26,7 @@ fun SoundsBottomAppBarActions(
         )
     }
     /*
-    * Activate find action
+    * Activate find actionGroup
      */
     IconButton(onClick = onSearch) {
         Icon(

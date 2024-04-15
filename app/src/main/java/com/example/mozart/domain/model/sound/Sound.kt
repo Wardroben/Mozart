@@ -1,4 +1,4 @@
-package com.example.mozart.domain.model
+package com.example.mozart.domain.model.sound
 
 data class Sound(
     val id: Long = 0L,

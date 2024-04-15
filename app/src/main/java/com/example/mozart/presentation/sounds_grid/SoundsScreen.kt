@@ -38,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mozart.R
-import com.example.mozart.domain.model.Sound
+import com.example.mozart.domain.model.sound.Sound
 import com.example.mozart.presentation.sounds_grid.components.AddSoundsFAB
 import com.example.mozart.presentation.sounds_grid.components.LoadingContent
 import com.example.mozart.presentation.sounds_grid.components.ModalSheetContent
@@ -73,7 +73,7 @@ fun SoundGridScreen(
         bottomBar = {
             BottomAppBar(
                 actions = {
-                    //TODO action: sorting, finding...
+                    //TODO actionGroup: sorting, finding...
                     SoundsBottomAppBarActions(
                         onSearch = { /*TODO*/ },
                         onSort = { viewModel.showFilterOptions() }
@@ -86,7 +86,7 @@ fun SoundGridScreen(
         }
     ) { paddings ->
         val uiState by viewModel.uiState.collectAsState()
-        val modalSheetState by viewModel.modalSheetState.collectAsState()
+        val modalSheetState by viewModel.modalSheetState.collectAsState(ModalSheetState())
         SoundsContent(
             modifier = modifier.padding(paddings),
             loading = uiState.isLoading,
@@ -107,16 +107,14 @@ fun SoundGridScreen(
                 viewModel.snackbarMessageShown()
             }
         }
-
         if (modalSheetState.isVisible) {
             ModalBottomSheet(
-                onDismissRequest = { viewModel.changeModalSheetVisibility(false) },
+                onDismissRequest = { viewModel.hideBottomModalSheet() },
                 sheetState = sheetState
             ) {
                 ModalSheetContent(
-                    sheetActionsGroup = modalSheetState.action,
-                    filterOnWidget = { viewModel.setFiltering(SoundFilterType.ON_WIDGET_SOUNDS) },
-                    showAllSounds = { viewModel.setFiltering(SoundFilterType.ALL_SOUNDS) },
+                    actionGroup = modalSheetState.actionGroup,
+                    filterSounds = { filterType -> viewModel.setFiltering(filterType) },
                     addSoundToWidget = { viewModel.moveSoundWidget(it, true) },
                     removeSoundFromWidget = { viewModel.moveSoundWidget(it, false) },
                     onDeleteSound = { viewModel.deleteSounds(listOf(it)) },
@@ -187,20 +185,6 @@ private fun mapUrisToSounds(
     Sound(
         uri = uri.toString(),
         fileName = fileNames[index]
-    )
-}
-
-/*
-* map uri to sound using another fun to get filename from file metadata
-* BAD IDEA
- */
-private fun mapUrisToSounds(
-    uris: List<Uri>,
-    context: Context
-) = uris.map { uri ->
-    Sound(
-        fileName = dumpFileDisplayName(uri, context.contentResolver),
-        uri = uri.toString()
     )
 }
 

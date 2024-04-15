@@ -4,4 +4,7 @@
     <dimen name="vertical_margin">16dp</dimen>
 
     <dimen name="list_item_padding">8dp</dimen>
+
+    <dimen name="sheet_item_horizontal_margin">20dp</dimen>
+    <dimen name="sheet_item_vertical_margin">15dp</dimen>
 </resources>

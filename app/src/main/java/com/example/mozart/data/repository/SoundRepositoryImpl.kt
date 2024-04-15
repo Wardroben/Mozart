@@ -1,10 +1,10 @@
 package com.example.mozart.data.repository
 
 import com.example.mozart.data.dao.SoundDao
-import com.example.mozart.domain.model.Sound
-import com.example.mozart.domain.model.SoundEntity
-import com.example.mozart.domain.model.toEntity
-import com.example.mozart.domain.model.toSound
+import com.example.mozart.domain.model.sound.Sound
+import com.example.mozart.domain.model.sound.SoundEntity
+import com.example.mozart.domain.model.sound.toEntity
+import com.example.mozart.domain.model.sound.toSound
 import com.example.mozart.domain.repository.SoundRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

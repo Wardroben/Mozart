@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.mozart.domain.model.SoundEntity
+import com.example.mozart.domain.model.sound.SoundEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

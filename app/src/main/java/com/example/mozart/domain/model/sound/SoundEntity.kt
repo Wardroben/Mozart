@@ -1,4 +1,4 @@
-package com.example.mozart.domain.model
+package com.example.mozart.domain.model.sound
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

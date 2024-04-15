@@ -1,6 +1,6 @@
 package com.example.mozart.common
 
-import com.example.mozart.domain.model.Sound
+import com.example.mozart.domain.model.sound.Sound
 
 object SoundExamples {
     val sounds: List<Sound> = listOf(

@@ -1,6 +1,6 @@
 package com.example.mozart.domain.repository
 
-import com.example.mozart.domain.model.Sound
+import com.example.mozart.domain.model.sound.Sound
 import kotlinx.coroutines.flow.Flow
 
 interface SoundRepository {

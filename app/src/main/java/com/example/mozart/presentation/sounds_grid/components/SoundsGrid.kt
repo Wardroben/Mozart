@@ -1,7 +1,6 @@
 package com.example.mozart.presentation.sounds_grid.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mozart.R
 import com.example.mozart.common.SoundExamples
-import com.example.mozart.domain.model.Sound
+import com.example.mozart.domain.model.sound.Sound
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,13 +44,13 @@ fun SoundsGrid(
             SoundItem(
                 sound = sound,
                 isPlaying = playingSound?.id == sound.id,
-                modifier = Modifier.combinedClickable(
-                    onClick = { onSoundClicked(sound) },
-                    onLongClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onLongSoundClicked(sound)
-                    }
-                )
+                modifier = Modifier.animateItemPlacement(),
+                onClick = { onSoundClicked(sound) },
+                onLongClicked = {
+                    onLongSoundClicked(sound)
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+
             )
         }
     }
