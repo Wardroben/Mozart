@@ -24,7 +24,7 @@ import com.example.mozart.util.SoundExamples
 fun SoundsGrid(
     modifier: Modifier = Modifier,
     sounds: List<Sound>,
-    playingSound: Sound?,
+    playingSoundId: Long?,
     onSoundClicked: (Sound) -> Unit,
     onLongSoundClicked: (Sound) -> Unit
 ) {
@@ -43,7 +43,7 @@ fun SoundsGrid(
         items(items = sounds, key = { sound -> sound.id }) { sound ->
             SoundItem(
                 sound = sound,
-                isPlaying = playingSound?.id == sound.id,
+                isPlaying = playingSoundId == sound.id,
                 modifier = Modifier.animateItemPlacement(),
                 onClick = { onSoundClicked(sound) },
                 onLongClicked = {
@@ -61,7 +61,7 @@ fun SoundsGrid(
 private fun SoundsGridPreview() {
     SoundsGrid(
         sounds = SoundExamples.sounds,
-        playingSound = null,
+        playingSoundId = null,
         onSoundClicked = {},
         onLongSoundClicked = {})
 }

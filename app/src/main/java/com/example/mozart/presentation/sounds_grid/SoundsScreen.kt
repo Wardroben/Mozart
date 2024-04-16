@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
 import com.example.mozart.R
 import com.example.mozart.domain.model.sound.Sound
 import com.example.mozart.mediasession.rememberManagedMediaController
@@ -61,6 +62,16 @@ fun SoundGridScreen(
     val sheetState = rememberModalBottomSheetState()
     val snackbarHostState = remember { SnackbarHostState() }
     val mediaController by rememberManagedMediaController()
+
+    mediaController?.addListener(object : Player.Listener {
+        override fun onEvents(player: Player, events: Player.Events) {
+            super.onEvents(player, events)
+            if (events.contains(Player.EVENT_TRACKS_CHANGED)) {
+                val soundId = player.currentMediaItem?.mediaId?.toLong()
+                viewModel.playSound(soundId)
+            }
+        }
+    })
 
     val soundsLauncher =
         rememberLauncherForActivityResult(
@@ -99,15 +110,25 @@ fun SoundGridScreen(
             noSoundsLabel = uiState.filterUiInfo.noSoundsLabel,
             noSoundsIconRes = uiState.filterUiInfo.noSoundIconRes,
             sounds = uiState.sounds,
-            playingSound = uiState.playingSound,
+            playingSoundId = uiState.playingSoundId,
             onSoundClicked = { sound ->
-                mediaController?.setMediaItem(
-                    MediaItem.Builder().setMediaId(sound.id.toString()).setUri(sound.uri)
-                        .setMediaMetadata(
-                            MediaMetadata.Builder().setTitle(sound.fileName).build()
-                        ).build()
-                )
-                mediaController?.play()
+                if (mediaController?.isPlaying == false) {
+                    mediaController?.run {
+                        setMediaItem(getMediaItemFromSound(sound))
+                        prepare()
+                        play()
+                    }
+                } else if (mediaController?.currentMediaItem?.mediaId?.toLong() == sound.id) {
+                    mediaController?.run {
+                        stop()
+                        clearMediaItems()
+                    }
+                } else {
+                    mediaController?.run {
+                        setMediaItem(getMediaItemFromSound(sound))
+                        play()
+                    }
+                }
             },
             onLongSoundClicked = { sound -> viewModel.showSoundControls(sound = sound) }
         )
@@ -147,6 +168,16 @@ fun SoundGridScreen(
     }
 }
 
+private fun getMediaItemFromSound(sound: Sound): MediaItem =
+    MediaItem.Builder()
+        .setMediaId(sound.id.toString())
+        .setUri(sound.uri)
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(sound.fileName)
+                .build()
+        ).build()
+
 @Composable
 fun SoundsContent(
     modifier: Modifier = Modifier,
@@ -155,7 +186,7 @@ fun SoundsContent(
     @StringRes noSoundsLabel: Int,
     @DrawableRes noSoundsIconRes: Int,
     sounds: List<Sound>,
-    playingSound: Sound?,
+    playingSoundId: Long?,
     onLongSoundClicked: (Sound) -> Unit,
     onSoundClicked: (Sound) -> Unit,
 ) {
@@ -183,7 +214,7 @@ fun SoundsContent(
             )
             SoundsGrid(
                 sounds = sounds,
-                playingSound = playingSound,
+                playingSoundId = playingSoundId,
                 onLongSoundClicked = onLongSoundClicked,
                 onSoundClicked = onSoundClicked
             )

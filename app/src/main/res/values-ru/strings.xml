@@ -11,10 +11,10 @@
     <string name="no_sounds_image_content_description">Изображение \"нет звуков\"</string>
     <string name="search_sounds_content_description">Искать звуки</string>
     <string name="sort_sounds_content_description">Сортировать звуки</string>
-    <string name="delete_sound_label">Удалить звук</string>
-    <string name="edit_sound_label">Редактировать звук</string>
-    <string name="add_to_widget_label">Добавить звук на виджет</string>
-    <string name="remove_from_widget_label">Убрать звук с виджета</string>
+    <string name="delete_sound_label">Удалить</string>
+    <string name="edit_sound_label">Редактировать</string>
+    <string name="add_to_widget_label">Добавить на виджет</string>
+    <string name="remove_from_widget_label">Убрать с виджета</string>
     <string name="mozart_widget_description">Проигрывайте звуки из приложения</string>
     <string name="open_app_label">Открыть приложение</string>
 </resources>

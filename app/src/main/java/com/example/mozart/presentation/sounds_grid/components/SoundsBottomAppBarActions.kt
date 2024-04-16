@@ -1,12 +1,12 @@
 package com.example.mozart.presentation.sounds_grid.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.mozart.R
 
@@ -21,7 +21,7 @@ fun SoundsBottomAppBarActions(
      */
     IconButton(onClick = onSort) {
         Icon(
-            imageVector = Icons.AutoMirrored.Default.List,
+            painter = painterResource(id = R.drawable.baseline_filter_list_24),
             contentDescription = stringResource(R.string.sort_sounds_content_description)
         )
     }

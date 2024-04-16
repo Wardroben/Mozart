@@ -11,10 +11,10 @@
     <string name="no_sounds_image_content_description">No sounds image</string>
     <string name="search_sounds_content_description">Search sounds</string>
     <string name="sort_sounds_content_description">Sort sounds</string>
-    <string name="delete_sound_label">Delete sound</string>
-    <string name="edit_sound_label">Edit sound</string>
-    <string name="add_to_widget_label">Add sound to the widget</string>
-    <string name="remove_from_widget_label">Remove sound from the widget</string>
+    <string name="delete_sound_label">Delete</string>
+    <string name="edit_sound_label">Edit</string>
+    <string name="add_to_widget_label">Add to the widget</string>
+    <string name="remove_from_widget_label">Remove from the widget</string>
 
     <string name="mozart_widget_description">Play sounds from app</string>
     <string name="open_app_label">Open app</string>

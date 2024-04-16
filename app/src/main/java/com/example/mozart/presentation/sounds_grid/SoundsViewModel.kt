@@ -11,9 +11,9 @@ import com.example.mozart.domain.repository.SoundRepository
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ALL_SOUNDS
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ON_WIDGET_SOUNDS
 import com.example.mozart.presentation.sounds_grid.components.SheetActionGroup
-import com.example.mozart.widget.MozartWidget
 import com.example.mozart.util.Async
 import com.example.mozart.util.WhileUiSubscribed
+import com.example.mozart.widget.MozartWidget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,10 +45,10 @@ class SoundsViewModel @Inject constructor(
     }
 
     private val _selectedSounds = MutableStateFlow<List<Sound>>(emptyList())
-
+    private val _playingSoundId = MutableStateFlow<Long?>(null)
     val uiState: StateFlow<SoundsUiState> = combine(
-        _filterUiInfo, _filteredSoundsAsync, _selectedSounds, _userMessage
-    ) { filterUiInfo, soundsAsync, selectedSounds, userMessage ->
+        _filterUiInfo, _filteredSoundsAsync, _selectedSounds, _userMessage, _playingSoundId
+    ) { filterUiInfo, soundsAsync, selectedSounds, userMessage, playingSoundId ->
         when (soundsAsync) {
             Async.Loading -> SoundsUiState(isLoading = true)
             is Async.Error -> SoundsUiState(userMessage = userMessage)
@@ -56,6 +56,7 @@ class SoundsViewModel @Inject constructor(
                 sounds = soundsAsync.data,
                 filterUiInfo = filterUiInfo,
                 selectedSounds = selectedSounds,
+                playingSoundId = playingSoundId
             )
         }
     }.stateIn(
@@ -94,6 +95,11 @@ class SoundsViewModel @Inject constructor(
         }
     }
 
+    fun playSound(soundId: Long?) {
+        _playingSoundId.update {
+            soundId
+        }
+    }
     fun snackbarMessageShown() {
         _userMessage.update { null }
     }
@@ -155,7 +161,7 @@ data class SoundsUiState(
     val sounds: List<Sound> = emptyList(),
     val filterUiInfo: FilteringUiInfo = FilteringUiInfo(),
     val userMessage: Int? = null,
-    val playingSound: Sound? = null,
+    val playingSoundId: Long? = null,
     val selectedSounds: List<Sound> = emptyList(),
     val isLoading: Boolean = false,
 )

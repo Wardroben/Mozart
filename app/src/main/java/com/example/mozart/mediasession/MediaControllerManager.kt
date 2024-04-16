@@ -38,6 +38,7 @@ internal class MediaControllerManager private constructor(context: Context) : Re
 
     internal fun release() {
         factory?.let {
+            controller.value?.stop()
             MediaController.releaseFuture(it)
             controller.value = null
         }
