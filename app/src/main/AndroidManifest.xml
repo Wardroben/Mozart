@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+
     <application
         android:name=".MozartApplication"
         android:allowBackup="true"
@@ -25,7 +28,7 @@
         </activity>
 
         <receiver
-            android:name=".presentation.widget.MozartWidgetReceiver"
+            android:name=".widget.MozartWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -34,7 +37,14 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/mozart_widget_info" />
         </receiver>
+
+        <service
+            android:name=".mediasession.PlaybackService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
     </application>
-
-
 </manifest>

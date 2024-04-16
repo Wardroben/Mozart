@@ -1,7 +1,7 @@
 package com.example.mozart.di
 
 import com.example.mozart.domain.repository.SoundRepository
-import com.example.mozart.presentation.widget.MozartWidgetViewModel
+import com.example.mozart.widget.MozartWidgetViewModel
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

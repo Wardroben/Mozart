@@ -11,7 +11,7 @@ import com.example.mozart.domain.repository.SoundRepository
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ALL_SOUNDS
 import com.example.mozart.presentation.sounds_grid.SoundFilterType.ON_WIDGET_SOUNDS
 import com.example.mozart.presentation.sounds_grid.components.SheetActionGroup
-import com.example.mozart.presentation.widget.MozartWidget
+import com.example.mozart.widget.MozartWidget
 import com.example.mozart.util.Async
 import com.example.mozart.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel

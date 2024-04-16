@@ -37,8 +37,11 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import com.example.mozart.R
 import com.example.mozart.domain.model.sound.Sound
+import com.example.mozart.mediasession.rememberManagedMediaController
 import com.example.mozart.presentation.sounds_grid.components.AddSoundsFAB
 import com.example.mozart.presentation.sounds_grid.components.LoadingContent
 import com.example.mozart.presentation.sounds_grid.components.ModalSheetContent
@@ -57,6 +60,8 @@ fun SoundGridScreen(
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val mediaController by rememberManagedMediaController()
+
     val soundsLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -95,7 +100,15 @@ fun SoundGridScreen(
             noSoundsIconRes = uiState.filterUiInfo.noSoundIconRes,
             sounds = uiState.sounds,
             playingSound = uiState.playingSound,
-            onSoundClicked = { sound -> },
+            onSoundClicked = { sound ->
+                mediaController?.setMediaItem(
+                    MediaItem.Builder().setMediaId(sound.id.toString()).setUri(sound.uri)
+                        .setMediaMetadata(
+                            MediaMetadata.Builder().setTitle(sound.fileName).build()
+                        ).build()
+                )
+                mediaController?.play()
+            },
             onLongSoundClicked = { sound -> viewModel.showSoundControls(sound = sound) }
         )
 

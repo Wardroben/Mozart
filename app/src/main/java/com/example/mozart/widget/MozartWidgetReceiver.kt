@@ -1,4 +1,4 @@
-package com.example.mozart.presentation.widget
+package com.example.mozart.widget
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
