@@ -72,6 +72,7 @@ fun SoundGridScreen(
             }
         }
     })
+    viewModel.playSound(mediaController?.currentMediaItem?.mediaId?.toLong())
 
     val soundsLauncher =
         rememberLauncherForActivityResult(

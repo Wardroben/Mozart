@@ -10,6 +10,8 @@ import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 
+//TODO: is this medaicontrollermanager necessary?
+
 @Stable
 internal class MediaControllerManager private constructor(context: Context) : RememberObserver {
     private val appContext = context.applicationContext
@@ -28,17 +30,19 @@ internal class MediaControllerManager private constructor(context: Context) : Re
         factory?.addListener(
             {
                 controller.value = factory?.let {
-                    if (it.isDone) it.get()
+                    if (it.isDone) {
+                        it.get()
+                    }
                     else null
                 }
             },
             MoreExecutors.directExecutor()
         )
+
     }
 
     internal fun release() {
         factory?.let {
-            controller.value?.stop()
             MediaController.releaseFuture(it)
             controller.value = null
         }
