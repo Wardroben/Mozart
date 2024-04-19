@@ -224,7 +224,7 @@ fun SoundsContent(
 }
 
 /*
-* map uri list and file names list to sound
+* map uri list and file names list to sounds
  */
 private fun mapUrisToSounds(
     uris: List<Uri>,

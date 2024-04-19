@@ -14,7 +14,7 @@ import com.google.common.util.concurrent.MoreExecutors
 
 @Stable
 internal class MediaControllerManager private constructor(context: Context) : RememberObserver {
-    private val appContext = context.applicationContext
+    private val appContext = context
     private var factory: ListenableFuture<MediaController>? = null
     var controller = mutableStateOf<MediaController?>(null)
 

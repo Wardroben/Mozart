@@ -73,13 +73,13 @@ fun ModalSheetContent(
 
                 is ControlSound.AddOnWidget -> {
                     changeSoundWidgetState(sheetAction.type.sound, true)
-                    //addSoundToWidget(sheetAction.type.sound)
+                    //addSoundToWidget(sheetAction.type.sounds)
                     hideSheet()
                 }
 
                 is ControlSound.RemoveFromWidget -> {
                     changeSoundWidgetState(sheetAction.type.sound, false)
-                    //removeSoundFromWidget(sheetAction.type.sound)
+                    //removeSoundFromWidget(sheetAction.type.sounds)
                     hideSheet()
                 }
 

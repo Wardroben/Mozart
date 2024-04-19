@@ -1,7 +1,6 @@
 package com.example.mozart.widget
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.glance.Button
 import androidx.glance.GlanceModifier
@@ -11,6 +10,7 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.lazy.GridCells
 import androidx.glance.appwidget.lazy.LazyVerticalGrid
 import androidx.glance.appwidget.lazy.items
@@ -25,28 +25,31 @@ import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.session.MediaController
 import com.example.mozart.R
 import com.example.mozart.domain.model.sound.Sound
-import com.example.mozart.mediasession.rememberManagedMediaController
 import com.example.mozart.presentation.MainActivity
 
 @Composable
 fun WidgetContent(
     modifier: GlanceModifier = GlanceModifier,
+    isLoading: Boolean,
     sounds: List<Sound>,
+    errorMessage: Int?,
     onPlayClick: (Sound) -> Unit,
     playingSoundId: Long?
 ) {
-    if (sounds.isEmpty()) EmptyWidgetSounds()
-    else WidgetSoundGrid(
-        sounds = sounds,
-        modifier = modifier.fillMaxSize().padding(10.dp),
-        onSoundClick = { sound -> onPlayClick(sound) },
-        playingSoundId = playingSoundId
-    )
+    if (isLoading) {
+        LoadingBody()
+    } else {
+
+        if (sounds.isEmpty()) EmptyWidgetSounds(errorMessage = errorMessage)
+        else WidgetSoundGrid(
+            sounds = sounds,
+            modifier = modifier.fillMaxSize().padding(10.dp),
+            onSoundClick = { sound -> onPlayClick(sound) },
+            playingSoundId = playingSoundId
+        )
+    }
 }
 
 
@@ -104,26 +107,45 @@ fun WidgetSoundItem(
 }
 
 @Composable
-fun EmptyWidgetSounds(modifier: GlanceModifier = GlanceModifier) {
+fun EmptyWidgetSounds(modifier: GlanceModifier = GlanceModifier, errorMessage: Int?) {
     val context = LocalContext.current
-    Box(
-        modifier = modifier.padding(10.dp).fillMaxSize().background(GlanceTheme.colors.background),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalAlignment = Alignment.CenterHorizontally
+    if (errorMessage == null) {
+        Box(
+            modifier = modifier.padding(10.dp).fillMaxSize()
+                .background(GlanceTheme.colors.background),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = context.getString(R.string.no_sounds_at_widget),
-                style = TextStyle(GlanceTheme.colors.onBackground)
-            )
-            Spacer(modifier = GlanceModifier.height(10.dp))
-            Button(
-                text = context.getString(R.string.open_app_label),
-                onClick = actionStartActivity<MainActivity>()
-            )
+            Column(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = context.getString(R.string.no_sounds_at_widget),
+                    style = TextStyle(GlanceTheme.colors.onBackground)
+                )
+                Spacer(modifier = GlanceModifier.height(10.dp))
+                Button(
+                    text = context.getString(R.string.open_app_label),
+                    onClick = actionStartActivity<MainActivity>()
+                )
+            }
         }
+    } else {
+        ErrorMessageBody(errorMessage = errorMessage)
+    }
+}
+
+@Composable
+fun ErrorMessageBody(modifier: GlanceModifier = GlanceModifier, errorMessage: Int) {
+    Box(modifier = modifier.fillMaxSize().background(GlanceTheme.colors.background)) {
+        Text(text = LocalContext.current.getString(errorMessage))
+    }
+}
+
+@Composable
+fun LoadingBody(modifier: GlanceModifier = GlanceModifier) {
+    Box(modifier = modifier.fillMaxSize().background(GlanceTheme.colors.background)) {
+        CircularProgressIndicator()
     }
 }
 

@@ -154,7 +154,7 @@ class SoundsViewModel @Inject constructor(
 }
 
 /**
- *Ui State for the sound list screen
+ *Ui State for the sounds list screen
  */
 @Immutable
 data class SoundsUiState(
