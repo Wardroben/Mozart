@@ -3,6 +3,7 @@ package com.example.mozart.widget
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.glance.Button
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
@@ -41,7 +42,6 @@ fun WidgetContent(
     if (isLoading) {
         LoadingBody()
     } else {
-
         if (sounds.isEmpty()) EmptyWidgetSounds(errorMessage = errorMessage)
         else WidgetSoundGrid(
             sounds = sounds,
@@ -72,7 +72,7 @@ fun WidgetSoundGrid(
                 title = sound.fileName.substringBeforeLast('.'),
                 modifier = GlanceModifier.padding(15.dp),
                 onClick = { onSoundClick(sound) },
-                isPlaying = sound.id == playingSoundId
+                isPlaying = sound.id == playingSoundId,
             )
         }
     }
@@ -83,7 +83,7 @@ fun WidgetSoundItem(
     modifier: GlanceModifier = GlanceModifier,
     title: String,
     isPlaying: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Box(modifier = modifier.clickable { onClick() }, contentAlignment = Alignment.Center) {
         Column(
@@ -92,9 +92,11 @@ fun WidgetSoundItem(
         ) {
             Image(
                 provider = ImageProvider(
-                    resId = if (isPlaying) R.drawable.baseline_stop_circle_24
+                    resId =
+                    if (isPlaying) R.drawable.baseline_stop_circle_24
                     else R.drawable.baseline_play_circle_24
                 ),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground),
                 contentDescription = null
             )
             Text(
@@ -144,7 +146,10 @@ fun ErrorMessageBody(modifier: GlanceModifier = GlanceModifier, errorMessage: In
 
 @Composable
 fun LoadingBody(modifier: GlanceModifier = GlanceModifier) {
-    Box(modifier = modifier.fillMaxSize().background(GlanceTheme.colors.background)) {
+    Box(
+        modifier = modifier.fillMaxSize().background(GlanceTheme.colors.background),
+        contentAlignment = Alignment.Center
+    ) {
         CircularProgressIndicator()
     }
 }

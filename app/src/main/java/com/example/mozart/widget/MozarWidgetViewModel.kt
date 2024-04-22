@@ -33,6 +33,7 @@ class MozartWidgetViewModel @Inject constructor(repository: SoundRepository) :
             Async.Loading -> WidgetUiState(isLoading = true)
             is Async.Success -> WidgetUiState(
                 sounds = soundsAsync.data,
+                isLoading = false
             )
         }
     }.stateIn(
@@ -52,5 +53,5 @@ class MozartWidgetViewModel @Inject constructor(repository: SoundRepository) :
 data class WidgetUiState(
     val sounds: List<Sound> = emptyList(),
     val errorMessage: Int? = null,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
 )

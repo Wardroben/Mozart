@@ -36,13 +36,14 @@ class MozartWidget : GlanceAppWidget() {
         )
         provideContent {
             GlanceTheme {
-                val uiState by viewModel.sounds.collectAsState()
                 var playingSoundId by remember { mutableStateOf<Long?>(null) }
+                val uiState by viewModel.sounds.collectAsState()
 
                 controller?.addListener(object : Player.Listener {
                     override fun onEvents(player: Player, events: Player.Events) {
-                        if (events.contains(Player.EVENT_TRACKS_CHANGED))
+                        if (events.contains(Player.EVENT_TRACKS_CHANGED)) {
                             playingSoundId = player.currentMediaItem?.mediaId?.toLong()
+                        }
                         super.onEvents(player, events)
                     }
                 })
