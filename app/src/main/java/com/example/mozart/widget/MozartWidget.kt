@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.core.content.ContextCompat
 import androidx.glance.GlanceId
 import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
@@ -28,16 +27,20 @@ class MozartWidget : GlanceAppWidget() {
         val viewModel = EntryPoints.get(context, WidgetEntryPoint::class.java).provideViewModel()
         val sessionToken =
             SessionToken(context, ComponentName(context, PlaybackService::class.java))
-        var controller by mutableStateOf<MediaController?>(null)
-        val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+        //var controller by mutableStateOf<MediaController?>(null)
+        viewModel.setControllerFuture(
+            MediaController.Builder(context, sessionToken).buildAsync()
+        )
+        /*val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         controllerFuture.addListener(
             { controller = controllerFuture.get() },
             ContextCompat.getMainExecutor(context)
-        )
+        )*/
         provideContent {
             GlanceTheme {
                 var playingSoundId by remember { mutableStateOf<Long?>(null) }
                 val uiState by viewModel.sounds.collectAsState()
+                val controller by viewModel.controller
 
                 controller?.addListener(object : Player.Listener {
                     override fun onEvents(player: Player, events: Player.Events) {
